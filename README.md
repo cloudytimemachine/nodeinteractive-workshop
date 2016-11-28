@@ -13,6 +13,9 @@ As companies look to build out their next-generation architectures, Node.js and 
 
 ## Workshop Slides
 
+[Workshop Slides - TBD]()  
+[Workshop Video - TBD]()  
+[Workshop Screencast - TBD]()
 
 ## Background Reading / Videos
 
