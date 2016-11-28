@@ -84,31 +84,58 @@ The CTM [frontend](https://github.com/cloudytimemachine/frontend) application ca
 
 ```kubectl describe pod <pod id>```
 
-```kubectl port-forward <pod id> 3000:3000```
+```kubectl port-forward <pod id> 3000:80```
+
+```curl localhost:3000```
+
+```kubectl exec -ti <frontend pod> /bin/sh```
+
+```vi index.html```
+
+```curl localhost:3000```
 
 ```kubectl expose deployment frontend --port=80 --target-port=3000 --name=frontend```
+
+```kubectl describe svc frontend```
+
+```kubectl scale deployment/frontend --replicas=2```
+
+```kubectl describe svc frontend```
+
+```kubectl edit pod <frontend pod>``` # Edit label to remove from the pool
+
+```kubectl get pods```
 
 ```kubectl edit svc/frontend``` # Change to type: NodePort
 
 ```minikube service frontend```
 
-```kubectl delete deployment/frontend service/frontend```
+```kubectl delete deployment/frontend svc/frontend```
+
+```kubectl delete pod <frontend pod>```
 
 
 ###  Deploy Frontend using declarative syntax
 
-```less deploy/frontend.yml```
+```atom deploy/frontend.yml```
 
 ```kubectl create -f deploy/frontend.yml```
 
 ```kubectl get pods```
+
+```kubectl get svc```
+
+
+###  Remind audience about architecture
+
+![Insert architecture image here]()
 
 
 ### Deploy API service using declarative syntax
 
 [API Service](https://github.com/cloudytimemachine/api) depends on Redis and RethinkDB, so lets create them first.
 
-```kubectl less deploy/redis.yml```
+```atom deploy/redis.yml```
 
 ```kubectl create -f deploy/redis.yml```
 
@@ -120,15 +147,13 @@ The CTM [frontend](https://github.com/cloudytimemachine/frontend) application ca
 
 Kubectl can also create from URL (Similar to  `curl | bash`)
 
-```
-kubectl create -f https://raw.githubusercontent.com/rosskukulinski/kubernetes-rethinkdb-cluster/master/rethinkdb-quickstart.yml
-```
+```kubectl create -f https://raw.githubusercontent.com/rosskukulinski/kubernetes-rethinkdb-cluster/master/rethinkdb-quickstart.yml```
 
-```kubectl port-forward <rethinkdb admin> 8080:8080```
+```kubectl get pods --watch```
 
-```open localhost:8080```
+```minikube service rethinkdb-admin```
 
-```less deploy/api.yml```
+```atom deploy/api.yml```
 
 ```kubectl create -f deploy/api.yml```
 
@@ -136,9 +161,55 @@ kubectl create -f https://raw.githubusercontent.com/rosskukulinski/kubernetes-re
 
 ```kubectl get svc```
 
-```kubectl logs <api pod> -f```
+```kubectl logs <api pod> --tail=10 -f```
 
-```kubectl logs <api pod> -f | bunyan```
+```kubectl logs <api pod> --tail=10 -f | bunyan```
 
 
 ### Deploy Gateway service to expose frontend & api
+
+```atom deploy/gateway.yml```
+
+```kubectl create -f deploy/gateway.yml```
+
+```kubectl get configmap```
+
+```kubectl get pods```
+
+```kubectl describe svc gateway```
+
+```minikube service gateway```
+
+Navigate to /api/snapshots --> See empty array
+
+Request snapshot for xkcd.com, gets queued in Redis
+
+### Deploy worker-screenshot service
+
+```atom deploy/worker-screenshot.yml```
+
+```kubectl create -f deploy/worker-screenshot.yml```
+
+```kubetctl get pods --watch```
+
+```kubectl logs <worker pod> -f | bunyan```
+
+Request additional snapshots, see the queue size increase
+
+```kubectl scale deployment/worker-screenshot --replicas=3```
+
+```kubectl get pods --watch```
+
+### Tear everything down
+
+```kubectl delete namespace default --cascade=true```
+
+### Bring it back up
+
+```
+kubectl create namespace default
+make
+kubectl create -f deploy/all-in-one.yml
+```
+
+### Back to slides to wrap up
