@@ -333,10 +333,7 @@ spec:
         app: gateway
     spec:
       containers:
-      - env:
-        - name: BUILD_SHA1
-          value: :9cd084d68cb06ac59c5a56b2130ea2cd879fda3b
-        image: nginx:1.9
+      - image: nginx:1.9
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
@@ -379,3 +376,4 @@ spec:
       - configMap:
           name: gateway-upstreams
         name: gateway-upstreams
+---

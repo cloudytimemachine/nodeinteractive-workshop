@@ -38,3 +38,4 @@ spec:
         imagePullPolicy: IfNotPresent
         name: redis
       restartPolicy: Always
+---

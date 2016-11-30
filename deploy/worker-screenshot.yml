@@ -17,9 +17,24 @@ spec:
         app: worker-screenshot
     spec:
       containers:
-        name: worker-screenshot
-        image: quay.io/cloudytimemachine/worker-screenshot:1360e1fec572e2ebf5d3b65e1d8a18d9ebba8093
+      - name: worker-screenshot
+        image: quay.io/cloudytimemachine/worker-screenshot:a68c6114a75dcfd91dd6df728a40a1d6afb4560e
         imagePullPolicy: IfNotPresent
+        env:
+        - name: NODE_ENV
+          value: PRODUCTION
+        - name: GCLOUD_PROJECT
+          valueFrom:
+            secretKeyRef:
+              name: gcloud-bucket
+              key: gcloud-project
+        - name: GCLOUD_KEYFILE
+          value: /var/gcloud/gcloud.json
+        - name: BUCKET_NAME
+          value: nodeinteractive
+        volumeMounts:
+        - mountPath: /var/gcloud
+          name: gcloud-bucket
         ports:
         - containerPort: 3000
           protocol: TCP
@@ -44,3 +59,8 @@ spec:
           successThreshold: 1
           timeoutSeconds: 5
       restartPolicy: Always
+      volumes:
+        - name: gcloud-bucket
+          secret:
+            secretName: gcloud-bucket
+---

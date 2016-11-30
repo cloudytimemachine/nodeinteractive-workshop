@@ -210,7 +210,6 @@ Request additional snapshots, see the queue size increase
 ### Bring it back up
 
 ```
-kubectl create namespace default
 make
 kubectl create -f deploy/all-in-one.yml
 ```
