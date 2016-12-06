@@ -13,8 +13,7 @@ As companies look to build out their next-generation architectures, Node.js and 
 
 ## Workshop Slides
 
-[Workshop Slides - TBD]()  
-[Workshop Video - TBD]()  
+[Workshop Slides - TBD](http://www.slideshare.net/kuxman/workshop-deploying-and-scaling-nodejs-with-kubernetes)  
 [Workshop Screencast - TBD]()
 
 ## Background Reading / Videos
